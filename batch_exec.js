@@ -9,14 +9,15 @@ if(arguments.length != 3){
     return;
 }
 console.log("参数" + arguments)
-var taskJs = path.join(__dirname, arguments[0]);
+// var taskJs = path.join(__dirname, arguments[0]);
+var task = arguments[0]
 var number = arguments[1];
 var seconds = arguments[2];
-console.log("任务文件地址:" + taskJs);
-if(!fs.existsSync(taskJs)){
-    console.log("指定js路径不存在: " + taskJs)
-    return;
-}
+// console.log("任务文件地址:" + taskJs);
+// if(!fs.existsSync(taskJs)){
+//     console.log("指定js路径不存在: " + taskJs)
+//     return;
+// }
 
 var batchExecute = function(number, func, callback){
     async.timesLimit(9999999, number, func, callback)
@@ -25,7 +26,10 @@ var batchExecute = function(number, func, callback){
 var wrapped = async.timeout(batchExecute, seconds * 1000,)
 
 wrapped(number, function(index, callback) {
-    var command = "node " +taskJs;
+    // var command = "node " +taskJs;
+    var command = "sudo -S docker exec -it jd bash jd " + task + " now << EOF \n" +
+        "qwer1234\n" +
+        "EOF";
     console.log("execute [" + (index + 1) + "/" + number + "] " +command);
     try {
         exec.execSync(command)
