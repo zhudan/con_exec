@@ -38,5 +38,6 @@ wrapped(number, function(index, callback) {
     // }
     // callback()
 }, function () {
-console.log("到达超时时间退出: " + seconds)
+    console.log("到达超时时间退出: " + seconds)
+    process.exit(0)
 });
