@@ -31,12 +31,12 @@ wrapped(number, function(index, callback) {
         "qwer1234\n" +
         "EOF";
     console.log("execute [" + (index + 1) + "/" + number + "] " +command);
-    try {
-        exec.execSync(command)
-    } catch (e) {
-        console.log("execute error: ", e)
-    }
-    callback()
+    // try {
+    exec.exec(command, callback)
+    // } catch (e) {
+    //     console.log("execute error: ", e)
+    // }
+    // callback()
 }, function () {
 console.log("到达超时时间退出: " + seconds)
 });
