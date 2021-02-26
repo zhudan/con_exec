@@ -35,10 +35,10 @@ wrapped(number, function(index, callback) {
     exec.exec(command, function(error, stdout, stderr){
         if (error) {
             console.error(`执行的错误: ${error}`);
-            return callback();
         }
         console.log(stdout)
         console.error(`stderr: ${stderr}`);
+        return callback();
     })
     // } catch (e) {
     //     console.log("execute error: ", e)
