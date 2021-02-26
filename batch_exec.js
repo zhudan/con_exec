@@ -32,7 +32,14 @@ wrapped(number, function(index, callback) {
         "EOF";
     console.log("execute [" + (index + 1) + "/" + number + "] " +command);
     // try {
-    exec.exec(command, callback)
+    exec.exec(command, function(error, stdout, stderr){
+        if (error) {
+            console.error(`执行的错误: ${error}`);
+            return callback();
+        }
+        console.log(stdout)
+        console.error(`stderr: ${stderr}`);
+    })
     // } catch (e) {
     //     console.log("execute error: ", e)
     // }
