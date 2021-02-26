@@ -1,4 +1,5 @@
 var async = require("async");
+var moment = require("moment");
 var path = require("path");
 var fs = require("fs");
 var exec = require('child_process');
@@ -9,15 +10,9 @@ if(arguments.length != 3){
     return;
 }
 console.log("参数" + arguments)
-// var taskJs = path.join(__dirname, arguments[0]);
 var task = arguments[0]
 var number = arguments[1];
 var seconds = arguments[2];
-// console.log("任务文件地址:" + taskJs);
-// if(!fs.existsSync(taskJs)){
-//     console.log("指定js路径不存在: " + taskJs)
-//     return;
-// }
 
 var batchExecute = function(number, func, callback){
     async.timesLimit(9999999, number, func, callback)
@@ -25,26 +20,31 @@ var batchExecute = function(number, func, callback){
 
 var wrapped = async.timeout(batchExecute, seconds * 1000,)
 
-wrapped(number, function(index, callback) {
-    // var command = "node " +taskJs;
-    var command = "sudo -S docker exec -i jd bash jd " + task + " now << EOF \n" +
-        "qwer1234\n" +
-        "EOF";
-    console.log("execute [" + (index + 1) + "/" + number + "] " +command);
-    // try {
-    exec.exec(command, function(error, stdout, stderr){
-        if (error) {
-            console.error(`执行的错误: ${error}`);
-        }
-        console.log(stdout)
-        console.error(`stderr: ${stderr}`);
-        return callback();
-    })
-    // } catch (e) {
-    //     console.log("execute error: ", e)
-    // }
-    // callback()
-}, function () {
-    console.log("到达超时时间退出: " + seconds)
-    process.exit(0)
-});
+var begin  = function(){
+    wrapped(number, function(index, callback) {
+        var command = "sudo -S docker exec -i jd bash jd " + task + " now << EOF \n" +
+            "qwer1234\n" +
+            "EOF";
+        console.log("execute [" + (index + 1) + "/" + number + "] " +command);
+        // try {
+        exec.exec(command, function(error, stdout, stderr){
+            if (error) {
+                console.error(`执行的错误: ${error}`);
+            }
+            console.log(stdout)
+            console.error(`stderr: ${stderr}`);
+        })
+        setTimeout(callback, 300)
+    }, function () {
+        console.log("到达超时时间退出: " + seconds)
+        process.exit(0)
+    });
+}
+
+/**
+ * 任务23:59:59秒跑
+ * @type {number}
+ */
+sleepMilliseconds = moment().endOf('day').toDate().getTime() - (new Date().getTime());
+console.log("开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
+setTimeout(begin, sleepMilliseconds)
