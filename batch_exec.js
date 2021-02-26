@@ -4,12 +4,11 @@ var fs = require("fs");
 var exec = require('child_process');
 
 var arguments = process.argv.splice(2)
-console.log("参数" + arguments)
 if(arguments.length != 3){
     console.log("参数不正确，第一个参数js文件路径, 第二个为并发数量，第三个参数为并发执行时长(s)")
     return;
 }
-
+console.log("参数" + arguments)
 var taskJs = path.join(__dirname, arguments[0]);
 var number = arguments[1];
 var seconds = arguments[2];
