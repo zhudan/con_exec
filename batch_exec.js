@@ -33,8 +33,9 @@ var begin  = function(){
             }
             console.log(stdout)
             console.error(`stderr: ${stderr}`);
+            callback();
         })
-        setTimeout(callback, 300)
+        // setTimeout(callback, 500)
     }, function () {
         console.log("到达超时时间退出: " + seconds)
         process.exit(0)
@@ -45,6 +46,9 @@ var begin  = function(){
  * 任务23:59:59秒跑
  * @type {number}
  */
-sleepMilliseconds = moment().endOf('day').toDate().getTime() - (new Date().getTime());
-console.log("开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
+var now = moment();
+var minute = now.get('minute') >= 29 ? 59 : 29;
+var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
+sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
+console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
 setTimeout(begin, sleepMilliseconds)
