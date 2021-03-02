@@ -35,9 +35,9 @@ var begin  = function(){
             }
             console.log(stdout)
             console.error(`stderr: ${stderr}`);
-            callback();
+            // callback();
         })
-        // setTimeout(callback, 500)
+        setTimeout(callback, 500)
     }, function () {
         console.log("到达超时时间退出: " + seconds)
         process.exit(0)
@@ -45,6 +45,7 @@ var begin  = function(){
 }
 if(now){
     console.log("立即开始执行: " + now)
+    begin();
 } else {
     /**
      * 任务23:59:59秒跑
