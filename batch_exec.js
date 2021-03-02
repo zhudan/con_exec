@@ -22,9 +22,10 @@ var wrapped = async.timeout(batchExecute, seconds * 1000,)
 
 var begin  = function(){
     wrapped(number, function(index, callback) {
-        var command = "sudo -S docker exec -i jd bash jd " + task + " now << EOF \n" +
-            "qwer1234\n" +
-            "EOF";
+        // var command = "sudo -S docker exec -i jd bash jd " + task + " now << EOF \n" +
+        //     "qwer1234\n" +
+        //     "EOF";
+        var command = "bash jd " + task + " now"
         console.log("execute [" + (index + 1) + "/" + number + "] " +command);
         // try {
         exec.exec(command, function(error, stdout, stderr){
