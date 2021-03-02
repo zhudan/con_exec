@@ -5,14 +5,15 @@ var fs = require("fs");
 var exec = require('child_process');
 
 var arguments = process.argv.splice(2)
-if(arguments.length != 3){
-    console.log("参数不正确，第一个参数js文件路径, 第二个为并发数量，第三个参数为并发执行时长(s)")
+if(arguments.length < 3 ){
+    console.log("参数不正确，第一个参数js, 第二个为并发数量，第三个参数为并发执行时长(s)")
     return;
 }
-console.log("参数" + arguments)
+console.log("参数:" + arguments)
 var task = arguments[0]
 var number = arguments[1];
 var seconds = arguments[2];
+var now = arguments[3];
 
 var batchExecute = function(number, func, callback){
     async.timesLimit(9999999, number, func, callback)
@@ -42,14 +43,17 @@ var begin  = function(){
         process.exit(0)
     });
 }
-
-/**
- * 任务23:59:59秒跑
- * @type {number}
- */
-var now = moment();
-var minute = now.get('minute') >= 29 ? 59 : 29;
-var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
-sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
-console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
-setTimeout(begin, sleepMilliseconds)
+if(now){
+    console.log("立即开始执行: " + now)
+} else {
+    /**
+     * 任务23:59:59秒跑
+     * @type {number}
+     */
+    var now = moment();
+    var minute = now.get('minute') >= 29 ? 59 : 29;
+    var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
+    sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
+    console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
+    setTimeout(begin, sleepMilliseconds)
+}
