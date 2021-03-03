@@ -52,9 +52,14 @@ if(now){
      * @type {number}
      */
     var now = moment();
-    var minute = now.get('minute') >= 29 ? 59 : 29;
-    var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
-    sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
-    console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
-    setTimeout(begin, sleepMilliseconds)
+    if(now.get('minute') == 0 || now.get('minute') == 30){
+        console.log("整点或者半点立即执行: " + now)
+        begin();
+    } else {
+        var minute = now.get('minute') > 30 ? 59 : 29;
+        var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
+        sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
+        console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
+        setTimeout(begin, sleepMilliseconds)
+    }
 }
