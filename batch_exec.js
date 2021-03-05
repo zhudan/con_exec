@@ -1,6 +1,5 @@
 var async = require("async");
 var moment = require("moment");
-var path = require("path");
 var fs = require("fs");
 var exec = require('child_process');
 
@@ -15,7 +14,7 @@ var configFile = arguments[0]
 var taskFile = arguments[1]
 var number = arguments[2] || 5;
 var seconds = arguments[3] || 10;
-var now = arguments[4];
+var now = arguments[2] == 'now' ? 'now': arguments[4];
 
 console.log("配置文件地址:" + configFile);
 if(!fs.existsSync(configFile)){
@@ -29,11 +28,34 @@ if(!fs.existsSync(taskFile)){
 }
 
 var parseConfigAndSetENV = function(){
-    var config = fs.readFileSync(configFile);
-    console.log(config.toString())
+    var config = fs.readFileSync(configFile).toString();
+    var jdCookie = (/Cookie1=\"(.+)\"/ig.exec(config)[1]);
+    if(!jdCookie){
+        console.log("没有配置Cookie1: " + configFile)
+        return;
+    }
+    var tgToken = (/TG_BOT_TOKEN=\"(.+)\"/ig.exec(config)[1]);
+    if(!tgToken){
+        console.log("没有配置TG_BOT_TOKEN: " + configFile)
+        return;
+    }
+    var tgUserId = (/TG_USER_ID=\"(.+)\"/ig.exec(config)[1]);
+    if(!tgUserId){
+        console.log("没有配置TG_USER_ID: " + configFile)
+        return;
+    }
+    process.env.JD_COOKIE=jdCookie;
+    process.env.MARKET_COIN_TO_BEANS="1000"
+    process.env.JD_JOY_REWARD_NAME="500"
+    process.env.TG_BOT_TOKEN=tgToken
+    process.env.TG_USER_ID=tgUserId
+    console.log(`导入变量: JD_COOKIE = ${process.env.JD_COOKIE}`)
+    console.log(`导入变量: MARKET_COIN_TO_BEANS = ${process.env.MARKET_COIN_TO_BEANS}`)
+    console.log(`导入变量: JD_JOY_REWARD_NAME = ${process.env.JD_JOY_REWARD_NAME}`)
+    console.log(`导入变量: TG_BOT_TOKEN = ${process.env.TG_BOT_TOKEN}`)
+    console.log(`导入变量: TG_USER_ID = ${process.env.TG_USER_ID}`)
 }
 
-parseConfigAndSetENV()
 
 var batchExecute = function(number, func, callback){
     async.timesLimit(9999999, number, func, callback)
@@ -43,26 +65,18 @@ var wrapped = async.timeout(batchExecute, seconds * 1000,)
 
 var begin  = function(){
     wrapped(number, function(index, callback) {
-        // var command = "sudo -S docker exec -i jd bash jd " + task + " now << EOF \n" +
-        //     "qwer1234\n" +
-        //     "EOF";
-        var command = "bash jd " + task + " now"
-        console.log("execute [" + (index + 1) + "/" + number + "] " +command);
-        // try {
-        exec.exec(command, function(error, stdout, stderr){
-            if (error) {
-                console.error(`执行的错误: ${error}`);
-            }
-            console.log(stdout)
-            console.error(`stderr: ${stderr}`);
-            // callback();
-        })
+        console.log("execute [" + (index + 1) + "/" + number + "] " + taskFile);
+        delete require.cache[require.resolve(taskFile)];
+        require(taskFile);
         setTimeout(callback, 500)
     }, function () {
         console.log("到达超时时间退出: " + seconds)
         process.exit(0)
     });
 }
+
+parseConfigAndSetENV();
+
 if(now){
     console.log("立即开始执行: " + now)
     begin();
