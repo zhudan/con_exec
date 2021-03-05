@@ -5,15 +5,35 @@ var fs = require("fs");
 var exec = require('child_process');
 
 var arguments = process.argv.splice(2)
-if(arguments.length < 3 ){
-    console.log("参数不正确，第一个参数js, 第二个为并发数量，第三个参数为并发执行时长(s)")
+console.log("说明: 第一个参数配置文件地址，第二个运行js路径, 第三个为并发数量(默认5)，第四个参数为执行时长(s, 默认10s)，第五个可以指定为now表示立即执行")
+if(arguments.length < 2 ){
+    console.log("参数不正确，第一个参数配置文件地址，第二个运行js路径必填")
     return;
 }
 console.log("参数:" + arguments)
-var task = arguments[0]
-var number = arguments[1];
-var seconds = arguments[2];
-var now = arguments[3];
+var configFile = arguments[0]
+var taskFile = arguments[1]
+var number = arguments[2] || 5;
+var seconds = arguments[3] || 10;
+var now = arguments[4];
+
+console.log("配置文件地址:" + configFile);
+if(!fs.existsSync(configFile)){
+    console.log("配置文件路径不存在: " + configFile)
+    return;
+}
+console.log("任务文件地址:" + taskFile);
+if(!fs.existsSync(taskFile)){
+    console.log("指定js路径不存在: " + taskFile)
+    return;
+}
+
+var parseConfigAndSetENV = function(){
+    var config = fs.readFileSync(configFile);
+    console.log(config.toString())
+}
+
+parseConfigAndSetENV()
 
 var batchExecute = function(number, func, callback){
     async.timesLimit(9999999, number, func, callback)
