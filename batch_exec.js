@@ -6,6 +6,11 @@ var cl = console.log;
 
 console.log = function(args){
     cl(args);
+    var now = moment();
+    if(now.get("hour") == 0 || now.get("hour") == 23){
+        //一般来说0点前后运行应该都是每天第一次跑, 因为脚本可能会提前跑所以不能退出
+        return;
+    }
     if(args.indexOf("1000京豆领光了") >= 0){//东东超市没豆了，退出
         cl('东东超市没豆子了,退出 ####################################')
         return process.exit(0);
