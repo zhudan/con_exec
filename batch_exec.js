@@ -6,11 +6,11 @@ var cl = console.log;
 
 console.log = function(args){
     cl(args);
-    if(args.indexOf("1000京豆领光了")){//东东超市没豆了，退出
+    if(args.indexOf("1000京豆领光了") >= 0){//东东超市没豆了，退出
         cl('东东超市没豆子了,退出 ####################################')
         return process.exit(0);
     }
-    if(args.indexOf("兑换京豆已达上限")){//东东超市没豆了，退出
+    if(args.indexOf("兑换京豆已达上限") >= 0){//东东超市没豆了，退出
         cl('宠汪汪已兑换成功,退出 ####################################')
         return process.exit(0);
     }
