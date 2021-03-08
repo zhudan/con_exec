@@ -1,7 +1,20 @@
 var async = require("async");
 var moment = require("moment");
 var fs = require("fs");
-var exec = require('child_process');
+
+var cl = console.log;
+
+console.log = function(args){
+    cl(args);
+    if(args.indexOf("1000京豆领光了")){//东东超市没豆了，退出
+        cl('东东超市没豆子了,退出 ####################################')
+        return process.exit(0);
+    }
+    if(args.indexOf("兑换京豆已达上限")){//东东超市没豆了，退出
+        cl('宠汪汪已兑换成功,退出 ####################################')
+        return process.exit(0);
+    }
+}
 
 var arguments = process.argv.splice(2)
 console.log("说明: 第一个参数配置文件地址，第二个运行js文件, 第三个为并发数量(默认5)，第四个参数为执行时长(s, 默认10s)，第五个可以指定为now表示立即执行")
