@@ -11,10 +11,10 @@ console.log = function(args){
         //一般来说0点前后运行应该都是每天第一次跑, 因为脚本可能会提前跑所以不能退出
         return;
     }
-    if(args.indexOf("1000京豆领光了") >= 0){//东东超市没豆了，退出
-        cl('东东超市没豆子了,退出 ####################################')
-        return process.exit(0);
-    }
+    // if(args.indexOf("1000京豆领光了") >= 0){//东东超市没豆了，退出
+    //     cl('东东超市没豆子了,退出 ####################################')
+    //     return process.exit(0);
+    // }
     if(args.indexOf("兑换京豆已达上限") >= 0){//东东超市没豆了，退出
         cl('宠汪汪已兑换成功,退出 ####################################')
         return process.exit(0);
@@ -113,7 +113,7 @@ if(now){
         begin();
     } else {
         var minute = now.get('minute') > 30 ? 59 : 29;
-        var schedulerTime = moment().set('minute', minute).set('second', 58).set('millisecond', 0);
+        var schedulerTime = moment().set('minute', minute).set('second', 59).set('millisecond', 0);
         sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
         console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss")+ ",开始睡眠: " + parseInt(sleepMilliseconds/1000) + "s")
         setTimeout(begin, sleepMilliseconds)
