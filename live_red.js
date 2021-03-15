@@ -53,7 +53,30 @@ async function getLiveDetail(liveId) {
 // getLiveList(1, 0).then(result =>{
 //     console.log(JSON.stringify(result))
 // });
+const page = 1;
+var currentCount = 0;
+var liveList = [];
+async.doUntil(function(callback){
+    getLiveList(page, currentCount).then(function(result){
+        if(!result || !result.data){
+            return callback();
+        }
+        if(result.data && result.data.currentCount){
+            currentCount = result.data.currentCount;
+        }
+        if(result.data.list && result.data.list.length>0){
+            liveList.push.apply(liveList, result.data.list)
+        }
+        return callback();
+    })
+}, function(callback){
+    console.log(currentCount, page, liveList.length)
+    callback(currentCount >= 0);
+}, function (err) {
+    console.log(currentCount, page, liveList.length)
+    console.log(err)
+})
 
-getLiveDetail(3686984).then(result =>{
-    console.log(JSON.stringify(result))
-});
+// getLiveDetail(3686984).then(result =>{
+//     console.log(JSON.stringify(result))
+// });
