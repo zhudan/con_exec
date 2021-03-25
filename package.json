@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
+    "got": "^11.8.2",
     "moment": "^2.29.1",
-    "got": "^11.8.2"
+    "tunnel": "^0.0.6",
+    "underscore": "^1.12.0"
   }
 }
