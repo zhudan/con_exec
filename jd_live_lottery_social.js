@@ -1,5 +1,5 @@
 const $ = new Env('直播间抽奖（全局）');
-const jdCookieNode = $.isNode() ? require('./tset/jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./test/jdCookie.js') : '';
 let cookiesArr = [
 ], cookie = '', message='';
 if ($.isNode()) {
