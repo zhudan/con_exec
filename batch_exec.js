@@ -81,7 +81,7 @@ var executeJs = function (index, callback) {
     console.log("execute [" + (index + 1) + "/" + number + "] " + taskFile);
     delete require.cache[require.resolve(taskFile)];
     require(taskFile);
-    setTimeout(callback, 50)
+    setTimeout(callback, 20)
 }
 
 var batchExecute = function(number, func, callback){
