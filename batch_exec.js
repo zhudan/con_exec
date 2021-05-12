@@ -31,11 +31,11 @@ console.log("原参数:" + arguments)
 
 var configFile = arguments[0]
 var taskFile = arguments[1]
-var number = isNaN(arguments[2]) ? 5 : arguments[2];
+var batchNumber = isNaN(arguments[2]) ? 5 : arguments[2];
 var seconds = arguments[3] || 10;
 var now = arguments[2] == 'now' ? 'now': arguments[4];
 
-console.log(`转换后参数: 配置文件: ${configFile}, js文件: ${taskFile}, 并发数量: ${number}, 执行时常: ${seconds}s, 是否立即执行: ${now == 'now'}`)
+console.log(`转换后参数: 配置文件: ${configFile}, js文件: ${taskFile}, 并发数量: ${batchNumber}, 执行时常: ${seconds}s, 是否立即执行: ${now == 'now'}`)
 
 console.log("配置文件地址:" + configFile);
 if(!fs.existsSync(configFile)){
@@ -78,10 +78,10 @@ var parseConfigAndSetENV = function(){
 }
 
 var executeJs = function (index, callback) {
-    console.log("execute [" + (index + 1) + "/" + number + "] " + taskFile);
+    console.log("execute [" + (index + 1) + "/" + batchNumber + "] " + taskFile);
     delete require.cache[require.resolve(taskFile)];
     require(taskFile);
-    setTimeout(callback, 200)
+    setTimeout(callback, 10000)
 }
 
 var batchExecute = function(number, func, callback){
@@ -91,7 +91,16 @@ var batchExecute = function(number, func, callback){
 
 var begin  = function(){
     var wrapped = async.timeout(batchExecute, seconds * 1000,)
-    wrapped(number, executeJs, function () {
+    wrapped(batchNumber, executeJs, function () {
+        if(taskFile.indexOf("jd_joy_reward") >= 0 && moment().get('hour') >= 16){//每天三个档，最后一个档执（16点）行完成之后还是无法兑500豆，那么降级兑20豆
+            console.log("超时退出前兜底兑换20豆~");
+            process.env.MARKET_COIN_TO_BEANS="20"
+            delete require.cache[require.resolve(taskFile)];
+            require(taskFile);
+            var seconds = 20;
+            console.log(`超时兜底脚本调用完成,${seconds}秒退出运行！`);
+            return setTimeout(function(){process.exit(0)}, seconds * 1000)
+        }
         console.log("到达超时时间退出: " + seconds)
         process.exit(0)
     });
@@ -105,7 +114,7 @@ if(now){
 } else {
     /**
      * 任务23:59:59秒跑
-     * @type {number}
+     * @type {batchNumber}
      */
     var now = moment();
     if(now.get('minute') == 0 || now.get('minute') == 30){
