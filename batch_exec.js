@@ -32,10 +32,10 @@ console.log("原参数:" + arguments)
 var configFile = arguments[0]
 var taskFile = arguments[1]
 var batchNumber = isNaN(arguments[2]) ? 5 : arguments[2];
-var seconds = arguments[3] || 10;
+var exeSeconds = arguments[3] || 10;
 var now = arguments[2] == 'now' ? 'now': arguments[4];
 
-console.log(`转换后参数: 配置文件: ${configFile}, js文件: ${taskFile}, 并发数量: ${batchNumber}, 执行时常: ${seconds}s, 是否立即执行: ${now == 'now'}`)
+console.log(`转换后参数: 配置文件: ${configFile}, js文件: ${taskFile}, 并发数量: ${batchNumber}, 执行时常: ${exeSeconds}s, 是否立即执行: ${now == 'now'}`)
 
 console.log("配置文件地址:" + configFile);
 if(!fs.existsSync(configFile)){
@@ -90,7 +90,7 @@ var batchExecute = function(number, func, callback){
 
 
 var begin  = function(){
-    var wrapped = async.timeout(batchExecute, seconds * 1000,)
+    var wrapped = async.timeout(batchExecute, exeSeconds * 1000,)
     wrapped(batchNumber, executeJs, function () {
         if(taskFile.indexOf("jd_joy_reward") >= 0 && moment().get('hour') >= 16){//每天三个档，最后一个档执（16点）行完成之后还是无法兑500豆，那么降级兑20豆
             console.log("超时退出前兜底兑换20豆~");
@@ -101,7 +101,7 @@ var begin  = function(){
             console.log(`超时兜底脚本调用完成,${seconds}秒退出运行！`);
             return setTimeout(function(){process.exit(0)}, seconds * 1000)
         }
-        console.log("到达超时时间退出: " + seconds)
+        console.log(`到达超时时间退出: ${exeSeconds}秒`)
         process.exit(0)
     });
 }
