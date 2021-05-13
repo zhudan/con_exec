@@ -93,8 +93,8 @@ var begin  = function(){
     var wrapped = async.timeout(batchExecute, exeSeconds * 1000,)
     wrapped(batchNumber, executeJs, function () {
         if(taskFile.indexOf("jd_joy_reward") >= 0 && moment().get('hour') >= 16){//每天三个档，最后一个档执（16点）行完成之后还是无法兑500豆，那么降级兑20豆
-            console.log("超时退出前兜底兑换20豆~");
             process.env.MARKET_COIN_TO_BEANS="20"
+            console.log(`超时退出前兜底兑换${process.env.MARKET_COIN_TO_BEANS}豆~`);
             delete require.cache[require.resolve(taskFile)];
             require(taskFile);
             var seconds = 20;
