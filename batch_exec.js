@@ -122,7 +122,7 @@ if(now){
         begin();
     } else {
         var minute = now.get('minute') > 30 ? 59 : 29;
-        var schedulerTime = moment().set('minute', minute).set('second', 58).set('millisecond', 200);
+        var schedulerTime = moment().set('minute', minute).set('second', 55).set('millisecond', 200);
         sleepMilliseconds = schedulerTime.toDate().getTime() - new Date().getTime();
         console.log("任务开始于: " +  schedulerTime.format("YYYY-MM-DD HH:mm:ss.SSS")+ ",开始睡眠: " + (sleepMilliseconds/1000) + "s")
         setTimeout(begin, sleepMilliseconds)
